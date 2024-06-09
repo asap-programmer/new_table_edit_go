@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Как можно работать с таблицами в MySQL на Go (Golang)</title>
+    </head>
+	<style>
+body {
+	font-family: sans-serif;
+	text-align: center;
+}
+table {
+	width: 90vw;
+	margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+	border-collapse: collapse;
+	table-layout: fixed;
+}
+tr:nth-child(odd) {
+	background-color: #C9E4F6;
+}
+tr:nth-child(even) {
+	background-color: #B4DAF2;
+}
+tr:first-child {
+	background-color: #00add9;
+	font-weight: bold;
+}
+tr {
+	opacity: 0.77;
+}
+tr:nth-child(n+2):hover {
+	color: #fff;
+	cursor: pointer;
+	font-weight: bold;
+	background-color: #bfdcee;
+}
+td {
+	padding: 5px;
+    position: relative;
+    border: 1px solid #333;
+    height: 20px;
+	word-break: break-all;
+}
+td:first-child {
+	width: 35px;
+	text-align: center;
+}
+h1, h1 a:visited {
+	color: #00add9;
+    background-color: #fff;
+	font-size: 30px;
+	font-family: Roboto, Geneva, Arial, Helvetica, sans-serif;
+}
+h1 a:hover {
+	color: #33bee1;
+}
+a {
+	text-decoration: none;
+}
+label {
+	font-size: 16px;
+	text-decoration: underline;
+}
+input[type="submit"] {
+	cursor: pointer;
+}
+
+	</style>
+    <body>
+        <h1><a href=".">Таблица с редактированием в MySQL на GO (Golang) с триггером и хранимой процедурой</a></h1>
+        <form method="POST" action="postform">
+			<div style="display: flex; justify-content: center;">
+				<div style="text-align: left;">
+					<div>
+						<label style="margin-right: 10px;">Координаты: </label>
+						<input type="text" name="coordinates" value="K98 L21" />
+					</div>
+					<div>
+						<label style="margin-right: 10px;">Интенсивность света: </label>
+						<input type="text" name="light_intensity" value="8.2" />
+					</div>
+					<div>
+						<label style="margin-right: 10px;">Иностранные объекты: </label>
+						<input type="text" name="foreign_objects" value="3" />
+					</div>
+					<div>
+						<label style="margin-right: 10px;">Звездные объекты: </label>
+						<input type="text" name="star_objects" value="12" />
+					</div>
+				</div>
+				<div style="text-align: left; margin-left: 20px;">
+					<div>
+						<label style="margin-right: 10px;">Неизвестные объекты: </label>
+						<input type="text" name="unknown_objects" value="1" />
+					</div>
+					<div>
+						<label style="margin-right: 10px;">Известные объекты: </label>
+						<input type="text" name="known_objects" value="11" />
+					</div>
+					<div>
+						<label style="margin-right: 10px;">Примечания: </label>
+						<input type="text" name="notes" value="notes" />
+					</div>
+				</div>
+			</div>
+			<input type="submit" value="Добавить" />
+		</form>
+		<br />
+		<form  method="GET" id="call-form">
+			<label for="table1">Первая таблица:</label>
+			<select name="table1" id="table1" onchange="removeDuplicateOptions(this.value, 'table1', 'table2');">
+				<option selected disabled hidden value="">Выберите таблицу</option>
+				<option value="sector">Sector</option>
+				<option value="position">Position</option>
+				<option value="naturalobjects">Natural Objects</option>
+				<option value="objects">Objects</option>
+			</select>
+
+			<label for="table2">Вторая таблица:</label>
+			<select name="table2" id="table2" onchange="removeDuplicateOptions(this.value, 'table2', 'table1');">
+				<option selected disabled hidden value="">Выберите таблицу</option>
+				<option value="sector">Sector</option>
+				<option value="position">Position</option>
+				<option value="naturalobjects">Natural Objects</option>
+				<option value="objects">Objects</option>
+			</select>
+
+			<button onclick="submitForm()">Объединить</button>
+		</form>
+		<br />
+
+		<table>
+@tr
+		</table>
+		<p>Версия базы данных:
+			<b>
+@ver
+			</b>
+		</p>
+
+		<script>
+			function submitForm() {
+				event.preventDefault();
+				console.log("wlkjsdf");
+				var table1 = document.getElementById("table1").value;
+				var table2 = document.getElementById("table2").value;
+
+				var url = "http://localhost:8181/?table=" + table1 + "," + table2;
+				window.location.href = url;
+			}
+
+			function removeDuplicateOptions(selectedValue, selectId1, selectId2) {
+        var select1 = document.getElementById(selectId1);
+        var select2 = document.getElementById(selectId2);
+        var options1 = select1.options;
+        var options2 = select2.options;
+
+        for (var i = 0; i < options1.length; i++) {
+            options1[i].disabled = false;
+        }
+
+        for (var i = 0; i < options2.length; i++) {
+            options2[i].disabled = false;
+        }
+
+        for (var i = 0; i < options1.length; i++) {
+            if (options1[i].value === selectedValue) {
+                options1[i].disabled = true;
+            }
+        }
+
+        for (var i = 0; i < options2.length; i++) {
+            if (options2[i].value === selectedValue) {
+                options2[i].disabled = true;
+            }
+        }
+    }
+
+		</script>
+    </body>
+</html>
